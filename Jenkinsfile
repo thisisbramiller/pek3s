@@ -8,13 +8,13 @@ pipeline {
                     scannerHome = tool('sonarScanner')
                 }
                 withSonarQubeEnv('SonarCloud') {
-                    sh '''
+                    sh """
                         ${scannerHome}/bin/sonar-scanner
                         -Dsonar.organization=thisisbramiller \
                         -Dsonar.projectKey=thisisbramiller_pek3s \
                         -Dsonar.sources=. \
                         -Dsonar.host.url=https://sonarcloud.io
-                    '''
+                    """
                 }
             }
         }
