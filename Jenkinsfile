@@ -9,7 +9,7 @@ pipeline {
                 }
                 withSonarQubeEnv('SonarCloud') {
                     sh '''
-                        sonar-scanner
+                        ${scannerHome}/bin/sonar-scanner
                         -Dsonar.organization=thisisbramiller \
                         -Dsonar.projectKey=thisisbramiller_pek3s \
                         -Dsonar.sources=. \
