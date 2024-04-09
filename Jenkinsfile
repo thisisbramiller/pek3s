@@ -8,14 +8,13 @@ pipeline {
                     scannerHome = tool('sonarScanner')
                 }
                 withSonarQubeEnv('SonarCloud') {
-                    sh """
-                        ${scannerHome}/bin/sonar-scanner
-                        -Dsonar.organization=thisisbramiller \
-                        -Dsonar.projectKey=thisisbramiller_pek3s \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=https://sonarcloud.io
-                    """
+                    sh "${scannerHome}/bin/sonar-scanner"
                 }
+            }
+        }
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 1)
             }
         }
     }
