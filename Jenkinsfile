@@ -27,6 +27,7 @@ pipeline {
                     sh "terraform init"
                     sh "terraform validate"
                     sh "terraform apply --auto-approve"
+                    sh "./scripts/generate_known_hosts.sh"
                 }
             }
         }
