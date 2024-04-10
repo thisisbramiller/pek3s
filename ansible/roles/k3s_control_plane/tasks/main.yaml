@@ -97,15 +97,15 @@
     owner: "{{ansible_user_id}}"
     mode: "u=rw,g=,o="
 
-- name: Configure k3s cluster to {{ endpoint_ip }}
+- name: Configure k3s cluster to {{endpoint_ip}}
   command: >-
     k3s kubectl config set-cluster default
-      --server={{ endpoint_ip }}
-      --kubeconfig {{ ansible_user_dir }}/.kube/config
+      --server={{endpoint_ip}}
+      --kubeconfig {{ansible_user_dir}}/.kube/config
   changed_when: true
   vars:
     endpoint_url: >-
-      https://{{ apiserver_endpoint | ansible.utils.ipwrap }}:6443
+      https://{{apiserver_endpoint | ansible.utils.ipwrap}}:6443
 
 - name: Create kubectl symlink
   file:
@@ -133,10 +133,10 @@
 
 - name: Remove k3s bootstrapping
   file:
-    path: "{{ item.path }}"
+    path: "{{item.path}}"
     state: absent
   with_items:
-    - "{{ k3s_server_manifests.files }}"
-    - "{{ k3s_server_manifests_directories.files }}"
+    - "{{k3s_server_manifests.files}}"
+    - "{{k3s_server_manifests_directories.files}}"
   loop_control:
-    label: "{{ item.path }}"
+    label: "{{item.path}}"
