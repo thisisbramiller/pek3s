@@ -122,6 +122,7 @@ data "template_file" "k3s" {
   vars = {
     control_plane_ips = "${join("\n", [for instance in proxmox_vm_qemu.kubernetes_vm_control : join("", [instance.default_ipv4_address])])}"
     worker_node_ips   = "${join("\n", [for instance in proxmox_vm_qemu.kubernetes_vm_workers : join("", [instance.default_ipv4_address])])}"
+    ssh_user = var.username
   }
 }
 
