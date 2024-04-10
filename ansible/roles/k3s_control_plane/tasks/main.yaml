@@ -64,3 +64,19 @@
   file:
     path: /var/lib/rancher/k3s/server
     mode: "{{p.stat.mode}}"
+
+- name: Create .kube directory
+  file:
+    path: "{{ansible_user_dir}}/.kube"
+    state: directory
+    owner: "{{ansible_user_id}}"
+    mode: "u=rwx,g=rx,o="
+
+
+- name: Copy .kube/config file to user home directory
+  copy:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: "{{ansible_user_dir}}/.kube/config"
+    remote_src: true
+    owner: "{{ansible_user_id}}"
+    mode: "u=rw,g=,o="
