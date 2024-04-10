@@ -93,7 +93,6 @@
     owner: "{{ansible_user_id}}"
     mode: "u=rwx,g=rx,o="
 
-
 - name: Copy .kube/config file to user home directory
   copy:
     src: /etc/rancher/k3s/k3s.yaml
@@ -109,8 +108,7 @@
       --kubeconfig {{ansible_user_dir}}/.kube/config
   changed_when: true
   vars:
-    endpoint_ip: >-
-      https://{{apiserver_endpoint | ansible.utils.ipwrap}}:6443
+    endpoint_ip: https://{{apiserver_endpoint}}:6443
 
 - name: Create kubectl symlink
   file:
