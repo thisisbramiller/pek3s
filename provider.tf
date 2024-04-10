@@ -1,4 +1,12 @@
 terraform {
+  cloud {
+    organization = "bramiller"
+
+    workspaces {
+      name = "pek3s"
+    }
+  }
+  
   required_providers {
     proxmox = {
       source  = "Telmate/proxmox"
