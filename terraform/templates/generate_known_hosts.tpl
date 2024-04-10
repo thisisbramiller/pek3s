@@ -2,7 +2,7 @@
 
 rm -f known_hosts.tmp
 
-for ip in ${all_ips}:
+for ip in ${all_ips}
 do
   echo "Collecting host key for $ip"
   ssh-keyscan -H $ip >> known_hosts.tmp
