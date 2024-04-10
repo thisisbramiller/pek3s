@@ -12,31 +12,17 @@ pipeline {
     }
     
     stages{
-        stage('Terraform Init') {
+        stage('SonarCloud Analysis') {
+            steps {
+                withSonarQubeEnv('SonarCloud') {
+                    sh "${SONAR_SCANNER}/bin/sonar-scanner"
+                }
+            }
+        }
+        stage('Provision Infrastructure') {
             steps {
                 sh "terraform init"
-            }
-        }
-        stage('Quality') {
-            parallel {
-                stage('SonarCloud Analysis') {
-                    steps {
-                        withSonarQubeEnv('SonarCloud') {
-                            sh "${SONAR_SCANNER}/bin/sonar-scanner"
-                        }
-                    }
-                }
-                stage('Validate') {
-                    steps {
-                        sh "terraform validate"
-                    }
-                }
-                
-            }
-        }
-
-        stage('Terraform Apply') {
-            steps {               
+                sh "terraform validate"
                 sh "terraform apply --auto-approve"
             }
         } 
