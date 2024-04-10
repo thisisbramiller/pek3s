@@ -1,0 +1,6 @@
+- name: install k3s
+  hosts: kube_cluster
+  gather_facts: true
+  roles:
+    - role: download
+      become: true

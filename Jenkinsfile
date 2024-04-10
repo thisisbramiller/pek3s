@@ -36,7 +36,7 @@ pipeline {
         }
         stage('Configure and Deploy K3S') {
             steps {
-                ansibleAdhoc('cluster -m ping -i ansible/inventory/inventory.ini')
+                ansiblePlaybook(installation: 'ansible', inventory: 'ansible/inventory/inventory.ini', playbook: 'ansible/site.yaml')
             }
         }
     }
