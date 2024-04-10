@@ -130,8 +130,15 @@ resource "local_file" "k3s_ansible_inventory" {
   filename = "../ansible/inventory/inventory.ini"
 }
 
-resource "null_resource" "generate_known_hosts" {
-  provisioner "local-exec" {
-    command = "${path.module}/generate_known_hosts.sh ${concat(proxmox_vm_qemu.kubernetes_vm_control.*.default_ipv4_address, proxmox_vm_qemu.kubernetes_vm_workers.*.default_ipv4_address)}"
+data "template_file" "generate_known_hosts" {
+  template = file("./templates/generate_known_hosts.tpl")
+  vars = {
+    all_ips = "${concat(proxmox_vm_qemu.kubernetes_vm_control.*.default_ipv4_address, proxmox_vm_qemu.kubernetes_vm_workers.*.default_ipv4_address)}"
   }
+}
+
+resource "local_file" "generate_known_hosts" {
+  content  = data.template_file.generate_known_hosts.rendered
+  filename = "./scripts/generate_known_hosts.sh"
+  file_permission = "0755"
 }
