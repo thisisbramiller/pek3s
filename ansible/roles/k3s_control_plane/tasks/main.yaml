@@ -12,7 +12,7 @@
 
 - name: Initialize cluster
   command:
-    cmd: "systemd-run --unit=k3s-init k3s server --cluster-init --token ${k3s_token}"
+    cmd: "systemd-run -p RestartSec=2 -p Restart=on-failure --unit=k3s-init k3s server --cluster-init --token {{k3s_token}}"
     creates: "{{systemd_directory}}/k3s-init.service"
 
 - name: Validate
