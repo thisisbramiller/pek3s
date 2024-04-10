@@ -138,7 +138,7 @@ data "template_file" "generate_known_hosts" {
 }
 
 resource "local_file" "generate_known_hosts" {
-  content  = data.template_file.generate_known_hosts.rendered
-  filename = "./scripts/generate_known_hosts.sh"
+  content         = data.template_file.generate_known_hosts.rendered
+  filename        = "./scripts/generate_known_hosts.sh"
   file_permission = "0755"
 }
