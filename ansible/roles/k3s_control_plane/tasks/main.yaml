@@ -31,23 +31,23 @@
 - debug:
     var: command_output.stdout_lines
 
-- name: Validate
-  when: not ansible_check_mode
-  block:
-    - name: Validate nodes
-      command:
-        cmd: k3s kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
-      register: nodes
-      until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups[control_plane_group | default('master')] | length)
-      retries: 20
-      delay: 10
-      changed_when: false
-  always:
-    - name: Kill initialization service
-      systemd:
-        name: k3s-init
-        state: stopped
-      failed_when: false
+# - name: Validate
+#   when: not ansible_check_mode
+#   block:
+#     - name: Validate nodes
+#       command:
+#         cmd: k3s kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
+#       register: nodes
+#       until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups[control_plane_group | default('master')] | length)
+#       retries: 20
+#       delay: 10
+#       changed_when: false
+#   always:
+#     - name: Kill initialization service
+#       systemd:
+#         name: k3s-init
+#         state: stopped
+#       failed_when: false
 
 - name: Copy k3s.service.j2 file
   register: k3s_service
@@ -106,3 +106,37 @@
   vars:
     endpoint_url: >-
       https://{{ apiserver_endpoint | ansible.utils.ipwrap }}:6443
+
+- name: Create kubectl symlink
+  file:
+    src: /usr/local/bin/k3s
+    dest: /usr/local/bin/kubectl
+    state: link
+
+- name: Create crictl symlink
+  file:
+    src: /usr/local/bin/k3s
+    dest: /usr/local/bin/crictl
+    state: link
+
+- name: Get files from manifests directory
+  find:
+    paths: /var/lib/rancher/k3s/server/manifests
+    file_type: file
+  register: k3s_server_manifests
+
+- name: Get sub directories of manifests directory
+  find:
+    paths: /var/lib/rancher/k3s/server/manifests
+    file_type: directory
+  register: k3s_server_manifests_directories
+
+- name: Remove k3s bootstrapping
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items:
+    - "{{ k3s_server_manifests.files }}"
+    - "{{ k3s_server_manifests_directories.files }}"
+  loop_control:
+    label: "{{ item.path }}"
