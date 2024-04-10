@@ -4,3 +4,9 @@
   roles:
     - role: download
       become: true
+
+- name: Setup k3s control plane
+  hosts: control_plane
+  roles:
+    - role: k3s_control_plane
+      become: true
