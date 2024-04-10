@@ -109,7 +109,7 @@
       --kubeconfig {{ansible_user_dir}}/.kube/config
   changed_when: true
   vars:
-    endpoint_url: >-
+    endpoint_ip: >-
       https://{{apiserver_endpoint | ansible.utils.ipwrap}}:6443
 
 - name: Create kubectl symlink
