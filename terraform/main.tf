@@ -104,10 +104,10 @@ resource "proxmox_vm_qemu" "kubernetes_vm_workers" {
 
   ipconfig0 = "ip=192.168.40.4${count.index}/24,gw=192.168.40.1"
   ciuser    = var.username
-  sshkeys   = <<EOF
+  sshkeys   = <<EOT
   ${var.ssh_key}
 ${var.ssh_key_ci}
-  EOF
+  EOT
 
   lifecycle {
     ignore_changes = [
@@ -132,6 +132,6 @@ resource "local_file" "k3s_ansible_inventory" {
 
 resource "null_resource" "generate_known_hosts" {
   provisioner "local-exec" {
-    command = "${join("\n", [for host in concat(proxmox_vm_qemu.kubernetes_vm_control, proxmox_vm_qemu.kubernetes_vm_workers) : "${host.default_ipv4_address} ssh-rsa ${host.ssh_public_key}"])}"
+    command = "${path.module}/scripts/generate_known_hosts.sh"
   }
 }
