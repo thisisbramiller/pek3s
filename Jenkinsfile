@@ -37,7 +37,7 @@ pipeline {
         }
         stage('Configure and Deploy K3S') {
             steps {
-                sh "${ANSIBLE_BIN}/ansible-galaxy collection install -r ./collections/requirements.yml"
+                sh "${ANSIBLE_BIN}/ansible-galaxy collection install -r ./collections/requirements.yaml"
                 ansiblePlaybook(installation: 'ansible', inventory: "${WORKSPACE}/ansible/inventory/inventory.ini", playbook: "${WORKSPACE}/ansible/site.yaml")
             }
         }
