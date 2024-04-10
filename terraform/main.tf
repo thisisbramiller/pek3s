@@ -47,6 +47,7 @@ resource "proxmox_vm_qemu" "kubernetes_vm_control" {
   ciuser    = var.username
   sshkeys   = <<EOF
   ${var.ssh_key}
+${var.ssh_key_ci}
   EOF
 
   lifecycle {
@@ -103,14 +104,41 @@ resource "proxmox_vm_qemu" "kubernetes_vm_workers" {
 
   ipconfig0 = "ip=192.168.40.4${count.index}/24,gw=192.168.40.1"
   ciuser    = var.username
-  sshkeys   = <<EOF
+  sshkeys   = <<EOT
   ${var.ssh_key}
-  EOF
+${var.ssh_key_ci}
+  EOT
 
   lifecycle {
     ignore_changes = [
       network, bootdisk,
     ]
   }
+
 }
 
+data "template_file" "k3s" {
+  template = file("./templates/k3s.tpl")
+  vars = {
+    control_plane_ips = "${join("\n", [for instance in proxmox_vm_qemu.kubernetes_vm_control : join("", [instance.default_ipv4_address])])}"
+    worker_node_ips   = "${join("\n", [for instance in proxmox_vm_qemu.kubernetes_vm_workers : join("", [instance.default_ipv4_address])])}"
+  }
+}
+
+resource "local_file" "k3s_ansible_inventory" {
+  content  = data.template_file.k3s.rendered
+  filename = "../ansible/inventory/inventory.ini"
+}
+
+data "template_file" "generate_known_hosts" {
+  template = file("./templates/generate_known_hosts.tpl")
+  vars = {
+    all_ips = join(" ", concat(proxmox_vm_qemu.kubernetes_vm_control.*.default_ipv4_address, proxmox_vm_qemu.kubernetes_vm_workers.*.default_ipv4_address))
+  }
+}
+
+resource "local_file" "generate_known_hosts" {
+  content         = data.template_file.generate_known_hosts.rendered
+  filename        = "./scripts/generate_known_hosts.sh"
+  file_permission = "0755"
+}

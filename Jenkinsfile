@@ -1,37 +1,39 @@
 pipeline {
     agent any
 
-    triggers {
-        // No schedule configured so will only run due to
-        // SCM changes if triggered by a post-commit hook
-        // No ingress internet to this server for incoming
-        // GitHub webhook request
-        pollSCM '' 
-    } 
+    environment {
+        PM_API_TOKEN_ID     = credentials('pm-api-token-id')
+        PM_API_TOKEN_SECRET = credentials('pm-api-token-secret')
+        SONAR_SCANNER       = tool('sonarScanner')
+        TF_VAR_ssh_key      = credentials('proxmox-ssh-key')
+        TF_VAR_ssh_key_ci   = credentials('jenkins-ssh-key')
+    }
+
+    tools {
+        terraform 'terraform'
+    }
     
     stages{
         stage('SonarCloud Analysis') {
             steps {
-                script {
-                    scannerHome = tool('sonarScanner')
-                }
                 withSonarQubeEnv('SonarCloud') {
-                    sh "${scannerHome}/bin/sonar-scanner"
+                    sh "${SONAR_SCANNER}/bin/sonar-scanner"
                 }
             }
         }
-
-        stage('Terraform Init') {
+        stage('Provision Infrastructure') {
             steps {
-                sh 'terraform init'
+                dir('terraform') {
+                    sh "terraform init"
+                    sh "terraform validate"
+                    sh "terraform apply --auto-approve"
+                }
             }
         }
-
-        stage('Terraform Validate and Apply') {
+        stage('Configure and Deploy K3S') {
             steps {
-                sh 'terraform validate'
-                sh 'terraform apply --auto-approve' 
+                echo 'ansiblePlaybook()'
             }
-        } 
+        }
     }
 }

@@ -11,7 +11,9 @@ variable "username" {
 }
 
 variable "ssh_key" {
-  default = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN22ORUO3S2egwyYBS2k/hJ22aS/f4rHSNEoRPnES+NF"
+}
+
+variable "ssh_key_ci" {
 }
 
 variable "k8s_control_instances" {
