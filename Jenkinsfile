@@ -3,11 +3,11 @@ pipeline {
 
     environment {
         PM_API_TOKEN_ID     = credentials('pm-api-token-id')
-        PM_API_TOKEN_SECRET = credentials('pm-api-token-secret') 
+        PM_API_TOKEN_SECRET = credentials('pm-api-token-secret')
+        SONAR_SCANNER = tool('sonarScanner')
     }
 
     tools {
-        sonarHome 'sonarScanner'
         terraform 'terraform'
     }
     
@@ -25,7 +25,7 @@ pipeline {
                 stage('SonarCloud Analysis') {
                     steps {
                         withSonarQubeEnv('SonarCloud') {
-                            sh "${scannerHome}/bin/sonar-scanner"
+                            sh "${SONAR_SCANNER}/bin/sonar-scanner"
                         }
                     }
                 }
