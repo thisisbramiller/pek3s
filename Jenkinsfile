@@ -23,14 +23,20 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                sh 'terraform init'
+                script {
+                    terraform = tool('terraform')
+                }
+                sh "${terraform} init"
             }
         }
 
         stage('Terraform Validate and Apply') {
             steps {
-                sh 'terraform validate'
-                sh 'terraform apply --auto-approve' 
+                script {
+                    terraform = tool('terraform')
+                }
+                sh "${terraform} validate"
+                sh "${terraform} apply --auto-approve"
             }
         } 
     }
