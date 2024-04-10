@@ -20,6 +20,14 @@
     cmd: "systemd-run -p RestartSec=2 -p Restart=on-failure --unit=k3s-init k3s server --cluster-init --token {{k3s_token}}"
     creates: "{{systemd_directory}}/k3s-init.service"
 
+- name: Debug statement
+  command:
+    cmd: k3s kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
+    register: command_output
+  
+- debug:
+    var: command_output.stdout_lines
+
 - name: Validate
   when: not ansible_check_mode
   block:
