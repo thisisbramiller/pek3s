@@ -5,3 +5,10 @@
     owner: root
     group: root
     mode: '0755'
+
+- name: Restart k3s service
+  ansible.builtin.systemd:
+    name: k3s-node
+    daemon_reload: true
+    state: restarted
+    enabled: true
