@@ -45,3 +45,22 @@
 - name: Wait for node-token presence
   wait_for:
     path: /var/lib/rancher/k3s/server/node-token
+
+- name: Change node-token file permissions 
+  file:
+    path: /var/lib/rancher/k3s/server
+    mode: "g+rx,o+rx"
+
+- name: Read node-token from control plane
+  slurp:
+    src: /var/lib/rancher/k3s/server/node-token
+  register: node_token
+
+- name: Store control plane node-token
+  set_fact:
+    token: "{{node_token.content | b64decode | regex_replace('\n', '')}}"
+
+- name: Restore node-token file permissions
+  file:
+    path: /var/lib/rancher/k3s/server
+    mode: "{{p.stat.mode}}"
