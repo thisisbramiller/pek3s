@@ -24,6 +24,9 @@
   command:
     cmd: k3s kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
   register: command_output
+  retries: 20
+  delay: 10
+  changed_when: false
   
 - debug:
     var: command_output.stdout_lines
@@ -93,3 +96,13 @@
     remote_src: true
     owner: "{{ansible_user_id}}"
     mode: "u=rw,g=,o="
+
+- name: Configure k3s cluster to {{ endpoint_ip }}
+  command: >-
+    k3s kubectl config set-cluster default
+      --server={{ endpoint_ip }}
+      --kubeconfig {{ ansible_user_dir }}/.kube/config
+  changed_when: true
+  vars:
+    endpoint_url: >-
+      https://{{ apiserver_endpoint | ansible.utils.ipwrap }}:6443

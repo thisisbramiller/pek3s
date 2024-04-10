@@ -1,3 +1,4 @@
 k3s_version: v1.29.3+k3s1
 k3s_token: put-real-token-in-vault
 systemd_directory: /etc/systemd/system
+apiserver_endpoint: "192.168.30.22"
