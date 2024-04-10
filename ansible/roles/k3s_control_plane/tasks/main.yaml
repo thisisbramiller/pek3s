@@ -18,13 +18,12 @@
 - name: Validate
   when: not ansible_check_mode
   block:
-    - name: Validate
-      command:
-        cmd: k3s kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
+    - name: Validate nodes
+      command: k3s kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
       register: nodes
-      until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups[control_plane_group | default('control_plane')] | length)
       retries: 20
       delay: 10
+      until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups[control_plane_group | default('master')] | length)
       changed_when: false
   always:
     - name: Kill initialization service
