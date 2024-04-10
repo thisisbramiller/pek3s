@@ -10,6 +10,11 @@
     state: stopped
   failed_when: false
 
+- name: reset failed k3s initializations
+  command: systemctl reset-failed k3s-init
+  failed_when: fail
+  changed_when: false
+
 - name: Initialize cluster
   command:
     cmd: "systemd-run -p RestartSec=2 -p Restart=on-failure --unit=k3s-init k3s server --cluster-init --token {{k3s_token}}"
@@ -22,7 +27,7 @@
       command:
         cmd: k3s kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
       register: nodes
-      until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups[control_plane_group | default('control_plane')] | length)
+      until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups[control_plane_group | default('k3s-control-0')] | length)
       retries: 20
       delay: 10
       changed_when: false
