@@ -120,8 +120,8 @@ ${var.ssh_key_ci}
 data "template_file" "k3s" {
   template = file("./templates/k3s.tpl")
   vars = {
-    control_plane_ips = "192.168.40.30"
-    worker_node_ips   = "192.168.40.30 \n 192.168.40.31"
+    control_plane_ips = "${join("\n", [for instance in proxmox_vm_qemu.kubernetes_vm_control : join("", [instance.default_ipv4_address])])}"
+    worker_node_ips   = "${join("\n", [for instance in proxmox_vm_qemu.kubernetes_vm_workers : join("", [instance.default_ipv4_address])])}"
   }
 }
 
