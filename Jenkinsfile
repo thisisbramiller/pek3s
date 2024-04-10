@@ -7,7 +7,7 @@ pipeline {
         // No ingress internet to this server for incoming
         // GitHub webhook request
         pollSCM '' 
-    }
+    } 
     
     stages{
         stage('SonarCloud Analysis') {
