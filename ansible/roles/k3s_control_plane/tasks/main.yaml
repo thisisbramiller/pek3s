@@ -10,5 +10,3 @@
     state: stopped
   failed_when: false
 
-- name: Deploy virtual ip manifest
-  include_tasks: virtual_ip.yaml
