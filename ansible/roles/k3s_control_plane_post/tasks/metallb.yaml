@@ -1,0 +1,8 @@
+- name: Make directory - manifests
+  file:
+    path: /tmp/k3s
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    mode: 0755
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
