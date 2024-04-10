@@ -5,14 +5,6 @@ pipeline {
         PM_API_TOKEN_ID     = credentials('pm-api-token-id')
         PM_API_TOKEN_SECRET = credentials('pm-api-token-secret') 
     }
-
-    triggers {
-        // No schedule configured so will only run due to
-        // SCM changes if triggered by a post-commit hook
-        // No ingress internet to this server for incoming
-        // GitHub webhook request
-        pollSCM '' 
-    } 
     
     stages{
         stage('Terraform Init') {
