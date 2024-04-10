@@ -36,7 +36,7 @@ pipeline {
         }
         stage('Configure and Deploy K3S') {
             steps {
-                ansiblePlaybook(installation: 'ansible', inventory: 'ansible/inventory/inventory.ini', playbook: 'ansible/site.yaml')
+                ansiblePlaybook(installation: 'ansible', inventory: "${WORKSPACE}/ansible/inventory/inventory.ini", playbook: "${WORKSPACE}/ansible/site.yaml")
             }
         }
     }
