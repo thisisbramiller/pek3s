@@ -41,3 +41,7 @@
     owner: root
     group: root
     mode: 0644
+
+- name: Wait for node-token presence
+  wait_for:
+    path: /var/lib/rancher/k3s/server/node-token
