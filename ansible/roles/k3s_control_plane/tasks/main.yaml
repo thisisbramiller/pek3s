@@ -101,14 +101,12 @@
     owner: "{{ansible_user_id}}"
     mode: "u=rw,g=,o="
 
-- name: Configure k3s cluster to {{endpoint_ip}}
+- name: Configure k3s cluster to endpoint
   command: >-
     k3s kubectl config set-cluster default
-      --server={{endpoint_ip}}
+      --server=https://{{apiserver_endpoint}}:6443
       --kubeconfig {{ansible_user_dir}}/.kube/config
   changed_when: true
-  vars:
-    endpoint_ip: https://{{apiserver_endpoint}}:6443
 
 - name: Create kubectl symlink
   file:
