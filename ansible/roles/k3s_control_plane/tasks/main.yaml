@@ -1,0 +1,11 @@
+- name: Stop k3s-init
+  systemd:
+    name: k3s-init
+    state: stopped
+  failed_when: false
+
+- name: Stop k3s
+  systemd:
+    name: k3s
+    state: stopped
+  failed_when: false
