@@ -5,6 +5,7 @@ pipeline {
         PM_API_TOKEN_ID     = credentials('pm-api-token-id')
         PM_API_TOKEN_SECRET = credentials('pm-api-token-secret')
         SONAR_SCANNER       = tool('sonarScanner')
+        ANSIBLE_BIN         = tool('ansible')
         TF_VAR_ssh_key      = credentials('proxmox-ssh-key')
         TF_VAR_ssh_key_ci   = credentials('jenkins-ssh-key')
     }
@@ -36,6 +37,7 @@ pipeline {
         }
         stage('Configure and Deploy K3S') {
             steps {
+                sh "${ANSIBLE_BIN}/ansible-galaxy collection install -r ./collections/requirements.yml"
                 ansiblePlaybook(installation: 'ansible', inventory: "${WORKSPACE}/ansible/inventory/inventory.ini", playbook: "${WORKSPACE}/ansible/site.yaml")
             }
         }
