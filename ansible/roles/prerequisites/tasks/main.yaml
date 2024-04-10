@@ -1,5 +1,5 @@
 - name: Disable UFW
-  community.general.ufw
+  community.general.ufw:
     state: disabled
 
 - name: Enable IPv4 forwarding
