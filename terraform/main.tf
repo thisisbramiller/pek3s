@@ -47,7 +47,7 @@ resource "proxmox_vm_qemu" "kubernetes_vm_control" {
   ciuser    = var.username
   sshkeys   = <<EOF
   ${var.ssh_key}
-  ${var.ssh_key_ci}
+${var.ssh_key_ci}
   EOF
 
   lifecycle {
@@ -106,7 +106,7 @@ resource "proxmox_vm_qemu" "kubernetes_vm_workers" {
   ciuser    = var.username
   sshkeys   = <<EOF
   ${var.ssh_key}
-  ${var.ssh_key_ci}
+${var.ssh_key_ci}
   EOF
 
   lifecycle {
@@ -114,5 +114,18 @@ resource "proxmox_vm_qemu" "kubernetes_vm_workers" {
       network, bootdisk,
     ]
   }
+
 }
 
+data "template_file" "k3s" {
+  template = file("./templates/k3s.tpl")
+  vars = {
+    control_plane_ips = "192.168.40.30"
+    worker_node_ips   = "192.168.40.30 \n 192.168.40.31"
+  }
+}
+
+resource "local_file" "k3s_ansible_inventory" {
+  content  = data.template_file.k3s.rendered
+  filename = "../ansible/inventory/inventory.ini"
+}
