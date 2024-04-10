@@ -1,0 +1,8 @@
+- name: mkdir - manifests on main control plane node
+  file:
+    path: /var/lib/rancher/k3s/server/manifests
+    state: directory
+    owner: root
+    group: root
+    mode: 0644
+when: ansible_hostname == hostvars[groups[control_plane_group | default('control_plane')][0]]['ansible_hostname']
