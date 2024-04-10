@@ -12,3 +12,15 @@
   roles:
     - role: k3s_control_plane
       become: true
+
+- name: Setup k3s agents
+  hosts: worker_nodes
+  roles:
+    - role: k3s_worker_nodes
+      become: true
+
+- name: Configure k3s cluster
+  hosts: control_plane
+  roles:
+    - role: k3s_control_plane_post
+      become: true
