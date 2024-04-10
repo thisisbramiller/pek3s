@@ -32,3 +32,12 @@
         name: k3s-init
         state: stopped
       failed_when: false
+
+- name: Copy k3s.service.j2 file
+  register: k3s_service
+  template:
+    src: "k3s.service.j2"
+    dest: "{{systemd_directory}}/k3s.service"
+    owner: root
+    group: root
+    mode: 0644
