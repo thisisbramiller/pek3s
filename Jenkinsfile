@@ -5,6 +5,11 @@ pipeline {
         PM_API_TOKEN_ID     = credentials('pm-api-token-id')
         PM_API_TOKEN_SECRET = credentials('pm-api-token-secret') 
     }
+
+    tools {
+        sonarHome 'sonarScanner'
+        terraform 'terraform'
+    }
     
     stages{
         stage('Terraform Init') {
@@ -19,9 +24,6 @@ pipeline {
             parallel {
                 stage('SonarCloud Analysis') {
                     steps {
-                        script {
-                            scannerHome = tool('sonarScanner')
-                        }
                         withSonarQubeEnv('SonarCloud') {
                             sh "${scannerHome}/bin/sonar-scanner"
                         }
@@ -29,9 +31,6 @@ pipeline {
                 }
                 stage('Validate') {
                     steps {
-                        script {
-                            terraform = tool('terraform')
-                        }
                         sh "${terraform} validate"
                     }
                 }
@@ -40,10 +39,7 @@ pipeline {
         }
 
         stage('Terraform Apply') {
-            steps {
-                script {
-                    terraform = tool('terraform')
-                }                
+            steps {               
                 sh "${terraform} apply --auto-approve"
             }
         } 
