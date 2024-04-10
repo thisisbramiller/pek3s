@@ -132,6 +132,6 @@ resource "local_file" "k3s_ansible_inventory" {
 
 resource "null_resource" "generate_known_hosts" {
   provisioner "local-exec" {
-    command = "${path.module}/scripts/generate_known_hosts.sh"
+    command = "${path.module}/generate_known_hosts.sh ${concat(proxmox_vm_qemu.kubernetes_vm_control.*.default_ipv4_address, proxmox_vm_qemu.kubernetes_vm_workers.*.default_ipv4_address)}"
   }
 }
