@@ -23,9 +23,11 @@ pipeline {
         }
         stage('Provision Infrastructure') {
             steps {
-                sh "terraform init"
-                sh "terraform validate"
-                sh "terraform apply --auto-approve"
+                dir('terraform') {
+                    sh "terraform init"
+                    sh "terraform validate"
+                    sh "terraform apply --auto-approve"
+                }
             }
         }
         stage('Configure and Deploy K3S') {
