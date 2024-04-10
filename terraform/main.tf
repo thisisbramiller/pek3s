@@ -133,7 +133,7 @@ resource "local_file" "k3s_ansible_inventory" {
 data "template_file" "generate_known_hosts" {
   template = file("./templates/generate_known_hosts.tpl")
   vars = {
-    all_ips = "${concat(proxmox_vm_qemu.kubernetes_vm_control.*.default_ipv4_address, proxmox_vm_qemu.kubernetes_vm_workers.*.default_ipv4_address)}"
+    all_ips = join(" ", concat(proxmox_vm_qemu.kubernetes_vm_control.*.default_ipv4_address, proxmox_vm_qemu.kubernetes_vm_workers.*.default_ipv4_address))
   }
 }
 
