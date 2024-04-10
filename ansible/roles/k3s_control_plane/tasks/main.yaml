@@ -12,7 +12,7 @@
 
 - name: reset failed k3s initializations
   command: systemctl reset-failed k3s-init
-  failed_when: fail
+  failed_when: false
   changed_when: false
 
 - name: Initialize cluster
