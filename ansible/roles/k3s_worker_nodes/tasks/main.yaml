@@ -1,0 +1,7 @@
+- name: Copy k3s.service.j2 file
+  ansible.builtin.template:
+    src: "k3s.service.j2"
+    dest: "{{systemd_directory}}/k3s-node.service"
+    owner: root
+    group: root
+    mode: '0755'
