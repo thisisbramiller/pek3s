@@ -24,16 +24,19 @@ pipeline {
         stage('Provision Infrastructure') {
             steps {
                 dir('terraform') {
-                    sh "terraform init"
-                    sh "terraform validate"
-                    sh "terraform apply --auto-approve"
-                    sh "./scripts/generate_known_hosts.sh"
+                    sh 'terraform init'
+                    sh 'terraform validate'
+                    sh 'terraform apply --auto-approve'
+                    echo 'Waiting for OS Bootup...'
+                    sleep 30
+                    echo 'Generating known_hosts...'
+                    sh './scripts/generate_known_hosts.sh'
                 }
             }
         }
         stage('Configure and Deploy K3S') {
             steps {
-                echo 'ansiblePlaybook()'
+                ansibleAdhoc('cluster -m ping -i ansible/inventory/inventory.ini')
             }
         }
     }
