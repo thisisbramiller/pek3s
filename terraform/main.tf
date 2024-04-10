@@ -129,3 +129,9 @@ resource "local_file" "k3s_ansible_inventory" {
   content  = data.template_file.k3s.rendered
   filename = "../ansible/inventory/inventory.ini"
 }
+
+resource "null_resource" "generate_known_hosts" {
+  provisioner "local-exec" {
+    command = "${join("\n", [for host in concat(proxmox_vm_qemu.kubernetes_vm_control, proxmox_vm_qemu.kubernetes_vm_workers) : "${host.default_ipv4_address} ssh-rsa ${host.ssh_public_key}"])}"
+  }
+}
