@@ -4,7 +4,7 @@ ${control_plane_ips}
 [worker_nodes]
 ${worker_node_ips}
 
-[cluster:children]
+[kube_cluster:children]
 control_plane
 worker_nodes
 
