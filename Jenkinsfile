@@ -30,7 +30,7 @@ pipeline {
         }
         stage('Configure and Deploy K3S') {
             steps {
-                ansiblePlaybook()
+                echo 'ansiblePlaybook()'
             }
         }
     }
