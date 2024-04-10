@@ -14,10 +14,7 @@ pipeline {
     stages{
         stage('Terraform Init') {
             steps {
-                script {
-                    terraform = tool('terraform')
-                }
-                sh "${terraform} init"
+                sh "terraform init"
             }
         }
         stage('Quality') {
@@ -31,7 +28,7 @@ pipeline {
                 }
                 stage('Validate') {
                     steps {
-                        sh "${terraform} validate"
+                        sh "terraform validate"
                     }
                 }
                 
@@ -40,7 +37,7 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {               
-                sh "${terraform} apply --auto-approve"
+                sh "terraform apply --auto-approve"
             }
         } 
     }
