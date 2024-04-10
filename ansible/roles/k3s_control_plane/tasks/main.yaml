@@ -62,6 +62,11 @@
   wait_for:
     path: /var/lib/rancher/k3s/server/node-token
 
+- name: Register node-token file permissions
+  stat:
+    path: /var/lib/rancher/k3s/server
+  register: permissions
+
 - name: Change node-token file permissions 
   file:
     path: /var/lib/rancher/k3s/server
@@ -79,7 +84,7 @@
 - name: Restore node-token file permissions
   file:
     path: /var/lib/rancher/k3s/server
-    mode: "{{p.stat.mode}}"
+    mode: "{{permissions.stat.mode}}"
 
 - name: Create .kube directory
   file:
