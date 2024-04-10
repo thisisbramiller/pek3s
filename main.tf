@@ -47,6 +47,7 @@ resource "proxmox_vm_qemu" "kubernetes_vm_control" {
   ciuser    = var.username
   sshkeys   = <<EOF
   ${var.ssh_key}
+  ${var.ssh_key_ci}
   EOF
 
   lifecycle {
