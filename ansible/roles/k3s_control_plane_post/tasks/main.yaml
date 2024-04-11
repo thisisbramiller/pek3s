@@ -21,4 +21,4 @@
     executable: /bin/bash
   changed_when: false
   run_once: true
-  with_items: "{{ groups[control_plane_group | default('master')] }}"
+  with_items: "{{ groups[control_plane_group | default('k3s-control-0')] }}"
