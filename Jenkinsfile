@@ -13,6 +13,11 @@ pipeline {
     tools {
         terraform 'terraform'
     }
+
+    parameters {
+        choice choices: ['1', '2'], name: 'K8S_CONTROL_INSTANCES'
+        choice choices: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '28', '26', '27', '28', '29', '30', '31', '32'], name: 'K8S_WORKER_INSTANCES'
+    }
     
     stages{
         stage('SonarCloud Analysis') {
@@ -27,7 +32,7 @@ pipeline {
                 dir('terraform') {
                     sh 'terraform init'
                     sh 'terraform validate'
-                    sh 'terraform apply --auto-approve'
+                    sh "terraform apply --auto-approve -var ${params.K8S_CONTROL_INSTANCES} -var ${params.WORKER_INSTANCES}"
                     echo 'Waiting for OS Bootup...'
                     sleep 30
                     echo 'Generating known_hosts...'
