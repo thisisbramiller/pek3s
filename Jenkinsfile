@@ -32,7 +32,7 @@ pipeline {
                 dir('terraform') {
                     sh 'terraform init'
                     sh 'terraform validate'
-                    sh "terraform apply --auto-approve -var k8s_control_instances=${params.K8S_CONTROL_INSTANCES} -var k8s_worker_instances=${params.WORKER_INSTANCES}"
+                    sh "terraform apply --auto-approve -var k8s_control_instances=${params.K8S_CONTROL_INSTANCES} -var k8s_worker_instances=${params.K8S_WORKER_INSTANCES}"
                     echo 'Waiting for OS Bootup...'
                     sleep 30
                     echo 'Generating known_hosts...'
